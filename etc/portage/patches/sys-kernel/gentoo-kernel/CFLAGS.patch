@@ -1,0 +1,11 @@
+--- linux/Makefile	2022-03-11 19:07:29.384653322 +0100
++++ optimized/Makefile	2022-03-11 20:28:44.207818194 +0100
+@@ -762,6 +762,8 @@ else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ KBUILD_CFLAGS += -Os
+ endif
+ 
++KBUILD_CFLAGS += -O3 -march=native -fgraphite-identity -floop-nest-optimize -fdevirtualize-at-ltrans -fipa-pta -fno-semantic-interposition
++
+ # Tell gcc to never replace conditional load with a non-conditional one
+ ifdef CONFIG_CC_IS_GCC
+ # gcc-10 renamed --param=allow-store-data-races=0 to
