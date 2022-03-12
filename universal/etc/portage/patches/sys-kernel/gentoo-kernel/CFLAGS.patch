@@ -4,7 +4,7 @@
  KBUILD_CFLAGS += -Os
  endif
  
-+KBUILD_CFLAGS += -O3 -march=native -fgraphite-identity -floop-nest-optimize -fdevirtualize-at-ltrans -fipa-pta -fno-semantic-interposition
++KBUILD_CFLAGS += -O3 -fgraphite-identity -floop-nest-optimize -fdevirtualize-at-ltrans -fipa-pta -fno-semantic-interposition
 +
  # Tell gcc to never replace conditional load with a non-conditional one
  ifdef CONFIG_CC_IS_GCC

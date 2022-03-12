@@ -1,0 +1,3 @@
+[submodule "submodules/kernel_compiler_patch"]
+	path = submodules/kernel_compiler_patch
+	url = https://github.com/graysky2/kernel_compiler_patch
