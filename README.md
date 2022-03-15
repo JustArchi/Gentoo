@@ -16,9 +16,13 @@
 
 ### `dracut`
 
-- **[optional `/etc/crypttab` support](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/cryptsetup.conf)**, a VERY important part which makes `cryptsetup` on `systemd` a breeze, with not a single `grub` cmdline arg needed, **should be offered by the Gentoo itself**
+- **[Optional `/etc/crypttab` support](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/cryptsetup.conf)**, a VERY important part which makes `cryptsetup` on `systemd` a breeze, with not a single `grub` cmdline arg needed, **should be offered by the Gentoo itself**
 - **[`hostonly`](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/hostonly.conf)**, no need to bundle what you don't need
 - **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/xz.conf)**, arguments for `xz` same as kernel compression
+
+### `env.d`
+
+- **[Disabled telemetry for `dotnet`](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/env.d/40dotnet)**
 
 ### `gentoo-kernel`
 
@@ -32,6 +36,6 @@ I strongly advocate against wasting time maintaining your own kernel, while tota
 - **[`dm-crypt` built-in](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/cryptsetup.config)**, as module usually doesn't cut it, rendering booting unusable
 - **[Disabled io-delay](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/io-delay.config)**, not needed for modern machines, use at your own risk
 - **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/kernel-compression.config)**, gives the best compression ratio and very good decompression speed, overall boots faster compared to `gzip` on my `x64` machine
-- **[better responsiveness](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/responsiveness.config)**, includes `PREEMPT` and 1000 Hz interrupts
+- **[Better responsiveness](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/responsiveness.config)**, includes `PREEMPT` and 1000 Hz interrupts
 - **[`lz4`-optimized zram](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/zram.config)**, `lz4` is currently winning fastest decompression competition, it should be used instead of other alternatives such as `lzo`
 - **[`lz4`-optimized zswap](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/zswap.config)**, as per above, and automatic enable of it, as I/O access is crucial
