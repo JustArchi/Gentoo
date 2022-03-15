@@ -26,7 +26,7 @@
 
 ### `gentoo-kernel`
 
-I strongly advocate against wasting time maintaining your own kernel, while totally encouraging compilation and customization. This is why you can find a lot of parts that further enhance `gentoo-kernel` package.
+I strongly advocate against wasting time maintaining your own kernel, while totally encouraging compilation and customization. This is why you can find a lot of parts here that further enhance `gentoo-kernel` package - parts that I classify as useful patches to adapt the kernel the way I want, without being forced to create a new config file with every minor release.
 
 Instead of spending hours if not days creating your own kernel config (and usually still failing at it), I prefer "distribution config patching" approach instead, which allows you to patch the config prior to kernel compilation automatically based on your configuration, which instead results in maximum compatibility and customization, while still allowing distro maintainers to do their thing right and build minimal modular kernel for you to use. No, disabling all the modules won't make your kernel perform better, it'll only cut on compilation time - unused modules are not causing overhead. Distro configs are already very nicely optimized and only crucial stuff is marked as `built-in`.
 
