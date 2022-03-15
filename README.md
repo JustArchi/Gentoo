@@ -28,6 +28,8 @@
 
 I strongly advocate against wasting time maintaining your own kernel, while totally encouraging compilation and customization. This is why you can find a lot of parts that further enhance `gentoo-kernel` package.
 
+Instead of spending hours if not days creating your own kernel config (and usually still failing at it), I prefer "distribution config patching" approach instead, which allows you to patch the config prior to kernel compilation automatically based on your configuration, which instead results in maximum compatibility and customization, while still allowing distro maintainers to do their thing right and build minimal modular kernel for you to use. No, disabling all the modules won't make your kernel perform better, it'll only cut on compilation time - unused modules are not causing overhead. Distro configs are already very nicely optimized and only crucial stuff is marked as `built-in`.
+
 - **[graysky's kernel patch](https://github.com/graysky2/kernel_compiler_patch)** for `gentoo-kernel`, this one is included with `experimental` USE flag for `gentoo-sources`, but no such feature for `gentoo-kernel`, sadly
 - **[my own CFLAGS patch](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/portage/patches/sys-kernel/gentoo-kernel/CFLAGS.patch)**, which should be combined with **[gentooLTO](https://github.com/InBetweenNames/gentooLTO)** overlay for the best results, requires `gcc` with `graphite` USE flag - highly experimental, works fine for me, but you've been warned
 - **[automatic `grub.cfg` regeneration](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/postinst.d/99-grub.sh)**, triggers only if you're currently using `grub.cfg`, safe to include even on non-grub machines, **should be offered by Gentoo itself**
