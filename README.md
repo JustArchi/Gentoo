@@ -9,23 +9,29 @@
 
 - `ArchiPC` includes stuff specific to my configuration, you may create your own while making use of mine for inspiration, but blindly copying anything from there most likely won't end good for you.
 - `intel` includes stuff generic to all machines with Intel CPU. You don't want that stuff on AMD.
-- `systemd` includes stuff generic to all machines with systemd init daemon. You don't want that stuff on OpenRC.
+- `systemd` includes stuff generic to all machines with systemd init daemon. You don't want that stuff on `OpenRC`.
 - `universal` includes universally good stuff. It may include stuff from other categories if I deem then as completely harmless, for example optional `/etc/crypttab` inclusion in dracut, despite being used solely by systemd.
 
 ## Features
+
+### `dracut`
+
+- **[optional `/etc/crypttab` support](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/cryptsetup.conf)**, a VERY important part which makes `cryptsetup` on `systemd` a breeze, with not a single `grub` cmdline arg needed, **should be offered by the Gentoo itself**
+- **[`hostonly`](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/hostonly.conf)**, no need to bundle what you don't need
+- **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/xz.conf)**, arguments for `xz` same as kernel compression
 
 ### `gentoo-kernel`
 
 I strongly advocate against wasting time maintaining your own kernel, while totally encouraging compilation and customization. This is why you can find a lot of parts that further enhance `gentoo-kernel` package.
 
-- **[graysky's kernel patch](https://github.com/graysky2/kernel_compiler_patch)** for `gentoo-kernel`
-- **[my own CFLAGS patch](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/portage/patches/sys-kernel/gentoo-kernel/CFLAGS.patch)**, which should be combined with **[gentooLTO](https://github.com/InBetweenNames/gentooLTO)** overlay for the best results, requires `gcc` with `graphite` USE flag
-- **[automatic `grub.cfg` regeneration](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/postinst.d/99-grub.sh)**, triggers only if you're currently using `grub.cfg`, safe to include even on non-grub machines
-- **[`-march=native` for intel](https://github.com/JustArchi/Gentoo/blob/main/intel/etc/kernel/config.d/intel-march-native.config)**
-- **[`systemd` target](https://github.com/JustArchi/Gentoo/blob/main/systemd/etc/kernel/config.d/systemd.config)**
-- **[`dm-crypt` built-in](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/cryptsetup.config)**, as module usually doesn't cut it
-- **[Disabled io-delay](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/io-delay.config**
-- **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/kernel-compression.config)**
+- **[graysky's kernel patch](https://github.com/graysky2/kernel_compiler_patch)** for `gentoo-kernel`, this one is included with `experimental` USE flag for `gentoo-sources`, but no such feature for `gentoo-kernel`, sadly
+- **[my own CFLAGS patch](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/portage/patches/sys-kernel/gentoo-kernel/CFLAGS.patch)**, which should be combined with **[gentooLTO](https://github.com/InBetweenNames/gentooLTO)** overlay for the best results, requires `gcc` with `graphite` USE flag - highly experimental, works fine for me, but you've been warned
+- **[automatic `grub.cfg` regeneration](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/postinst.d/99-grub.sh)**, triggers only if you're currently using `grub.cfg`, safe to include even on non-grub machines, **should be offered by Gentoo itself**
+- **[`-march=native` for intel](https://github.com/JustArchi/Gentoo/blob/main/intel/etc/kernel/config.d/intel-march-native.config)**, requires **[graysky's kernel patch](https://github.com/graysky2/kernel_compiler_patch)**, otherwise is a no-op when applied, naturally you don't want that on AMD
+- **[`systemd` target](https://github.com/JustArchi/Gentoo/blob/main/systemd/etc/kernel/config.d/systemd.config)**, naturally you don't want that on `OpenRC`
+- **[`dm-crypt` built-in](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/cryptsetup.config)**, as module usually doesn't cut it, rendering booting unusable
+- **[Disabled io-delay](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/io-delay.config)**, not needed for modern machines, use at your own risk
+- **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/kernel-compression.config)**, gives the best compression ratio and very good decompression speed, overall boots faster compared to `gzip` on my `x64` machine
 - **[better responsiveness](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/responsiveness.config)**, includes `PREEMPT` and 1000 Hz interrupts
-- **[`lz4`-optimized zram](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/zram.config)**
-- **[`lz4`-optimized zswap](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/zswap.config)** and automatic enable
+- **[`lz4`-optimized zram](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/zram.config)**, `lz4` is currently winning fastest decompression competition, it should be used instead of other alternatives such as `lzo`
+- **[`lz4`-optimized zswap](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/zswap.config)**, as per above, and automatic enable of it, as I/O access is crucial
