@@ -10,7 +10,7 @@
 - `ArchiPC` includes stuff specific to my configuration, you may create your own while making use of mine for inspiration, but blindly copying anything from there most likely won't end good for you.
 - `intel` includes stuff generic to all machines with Intel CPU. You don't want that stuff on AMD.
 - `systemd` includes stuff generic to all machines with systemd init daemon. You don't want that stuff on `OpenRC`.
-- `universal` includes universally good stuff. It may include stuff from other categories if I deem then as completely harmless, for example optional `/etc/crypttab` inclusion in dracut, despite being used solely by systemd.
+- `universal` includes universally good stuff. It may include stuff from other categories if I deem it as completely harmless, for example optional `/etc/crypttab` inclusion in dracut, despite being used solely by `systemd`.
 
 ## Features
 
