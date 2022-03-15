@@ -2,7 +2,7 @@
 
 ## How to use this repo
 
-- `git clone https://github.com/JustArchi/Gentoo`
+- `git clone --recursive https://github.com/JustArchi/Gentoo`
 - `ln -s` files that you deem wanted/useful, consider `cp` only when you want to refrain from their further updates by me. I generally suggest symlinking standalone files, but folders are possible as well.
 
 ## Overview
