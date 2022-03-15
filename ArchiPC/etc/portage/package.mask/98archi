@@ -1,0 +1,2 @@
+# https://github.com/containerd/containerd/issues/6586
+>=dev-lang/go-1.18
