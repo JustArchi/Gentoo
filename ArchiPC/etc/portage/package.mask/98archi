@@ -1,2 +1,2 @@
-# https://github.com/containerd/containerd/issues/6586
->=dev-lang/go-1.18
+>=dev-lang/go-1.18 # https://bugs.gentoo.org/835367
+>=dev-python/flask-compress-1.11 # https://bugs.gentoo.org/834877
