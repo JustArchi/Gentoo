@@ -5,6 +5,7 @@ set -eu
 PATCH=1
 SOURCE="GloriousEggroll/proton-ge-custom"
 VERSION="latest"
+BUILD_IN="/tmp"
 
 # Script logic
 JOBS="$(grep -c "processor" "/proc/cpuinfo")"
@@ -25,20 +26,25 @@ WARN() {
 }
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--source proton/proton-ge] [--version latest/<branch>/<tag>/<commit>] [--no-optimizations-patch]"
+	echo "Usage: $0 [--build-in <path>] [--source proton/proton-ge] [--version latest/<branch>/<tag>/<commit>] [--no-optimizations-patch]"
 }
 
+BUILD_IN_NEXT=0
 SOURCE_NEXT=0
 VERSION_NEXT=0
 
 for ARG in "$@"; do
 	case "$ARG" in
+		"--build-in") BUILD_IN_NEXT=1 ;;
 		"--help") PRINT_USAGE; exit 0 ;;
 		"--no-optimizations-patch") PATCH=0 ;;
 		"--source") SOURCE_NEXT=1 ;;
 		"--version") VERSION_NEXT=1 ;;
 		*)
-			if [ "$SOURCE_NEXT" -eq 1 ]; then
+			if [ "$BUILD_IN_NEXT" -eq 1 ]; then
+				BUILD_IN="$ARG"
+				BUILD_IN_NEXT=0
+			elif [ "$SOURCE_NEXT" -eq 1 ]; then
 				case "$ARG" in
 					"proton") SOURCE="ValveSoftware/Proton" ;;
 					"proton-ge") SOURCE="GloriousEggroll/proton-ge-custom" ;;
@@ -101,14 +107,22 @@ if [ "$VERSION" = "latest" ]; then
 	INFO "Latest ${SOURCE} release: ${VERSION}"
 fi
 
-TMP_DIR="$(mktemp -d)"
+if [ "$BUILD_IN" = "/tmp" ]; then
+	BUILD_IN="$(mktemp -d)"
+else
+	# Extra directory to ensure user didn't pick existing one that we'll wipe from his PC
+	BUILD_IN="${BUILD_IN}/build"
+
+	rm -rf "$BUILD_IN"
+	mkdir -p "$BUILD_IN"
+fi
 
 INFO "Cloning ${SOURCE} in ${VERSION} version..."
 
-git clone "https://github.com/${SOURCE}" --branch "$VERSION" --depth 1 --jobs "$JOBS" --recursive --shallow-submodules "$TMP_DIR"
+git clone "https://github.com/${SOURCE}" --branch "$VERSION" --depth 1 --jobs "$JOBS" --recursive --shallow-submodules "$BUILD_IN"
 
 (
-	cd "${TMP_DIR}"
+	cd "$BUILD_IN"
 
 	if [ "$PATCH" -eq 1 ]; then
 		INFO "Patching Makefile.in..."
