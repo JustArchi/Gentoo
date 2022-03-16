@@ -1,0 +1,139 @@
+#!/usr/bin/env sh
+set -eu
+
+# Defaults
+PATCH=1
+SOURCE="GloriousEggroll/proton-ge-custom"
+VERSION="latest"
+
+# Script logic
+JOBS="$(grep -c "processor" "/proc/cpuinfo")"
+TOOLS="curl git makeotf patch"
+SUPPORTED_CONTAINERS="docker podman"
+
+INFO() {
+	echo "$(date -u --rfc-3339=seconds) INFO: $*"
+}
+
+ERROR() {
+	echo "$(date -u --rfc-3339=seconds) ERROR: $*"
+}
+
+PRINT_USAGE() {
+	echo "Usage: $0 [--source proton/proton-ge] [--version latest/<branch>/<tag>/<commit>] [--no-optimizations-patch]"
+}
+
+SOURCE_NEXT=0
+VERSION_NEXT=0
+
+for ARG in "$@"; do
+	case "$ARG" in
+		"--help") PRINT_USAGE; exit 0 ;;
+		"--no-optimizations-patch") PATCH=0 ;;
+		"--source") SOURCE_NEXT=1 ;;
+		"--version") VERSION_NEXT=1 ;;
+		*)
+			if [ "$SOURCE_NEXT" -eq 1 ]; then
+				case "$ARG" in
+					"proton") SOURCE="ValveSoftware/Proton" ;;
+					"proton-ge") SOURCE="GloriousEggroll/proton-ge-custom" ;;
+					*) PRINT_USAGE; exit 1 ;;
+				esac
+
+				SOURCE_NEXT=0
+			elif [ "$VERSION_NEXT" -eq 1 ]; then
+				VERSION="$ARG"
+				VERSION_NEXT=0
+			else
+				PRINT_USAGE
+				exit 1
+			fi
+
+			;;
+	esac
+done
+
+INFO "Checking tools..."
+
+for TOOL in $TOOLS; do
+	if ! command -v "$TOOL" > /dev/null; then
+		ERROR "Required tool ${TOOL} couldn't be found, please install appropriate package for your OS!"
+		exit 1
+	fi
+done
+
+HAS_SUPPORTED_CONTAINER=0
+
+for SUPPORTED_CONTAINER in $SUPPORTED_CONTAINERS; do
+	if command -v "$SUPPORTED_CONTAINER" > /dev/null; then
+		HAS_SUPPORTED_CONTAINER=1
+
+		break
+	fi
+done
+
+if [ "$HAS_SUPPORTED_CONTAINER" -eq 0 ]; then
+	ERROR "No supported container method found, please install appropriatepackage for your OS to provide at least one of these: ${SUPPORTED_CONTAINERS}"
+	exit 1
+fi
+
+
+if [ "$VERSION" = "latest" ]; then
+	INFO "Checking latest ${SOURCE} release..."
+
+	VERSION="$(curl -s "https://api.github.com/repos/${SOURCE}/releases" | jq -r '.[0].tag_name')"
+
+	if [ -z "$VERSION" ]; then
+		ERROR "Could not fetch latest ${SOURCE} release!"
+		exit 1
+	fi
+
+	INFO "Latest ${SOURCE} release: ${VERSION}"
+fi
+
+TMP_DIR="$(mktemp -d)"
+
+INFO "Cloning ${SOURCE} in ${VERSION} version..."
+
+git clone "https://github.com/${SOURCE}" --branch "$VERSION" --depth 1 --jobs "$JOBS" --recursive --shallow-submodules "$TMP_DIR"
+
+(
+	cd "${TMP_DIR}"
+
+	if [ "$PATCH" -eq 1 ]; then
+		INFO "Patching Makefile.in..."
+
+		patch << 'EOF'
+--- Makefile.in 2022-03-16 21:31:36.061588205 +0100
++++ Makefile.in.2       2022-03-16 21:41:43.590826060 +0100
+@@ -174,10 +174,10 @@ else
+     MESON_STRIP_ARG := --strip
+ endif
+ 
+-CROSSLDFLAGS   += -Wl,--file-alignment,4096
+-OPTIMIZE_FLAGS := -O2 -march=nocona -mtune=core-avx2 -mfpmath=sse
+-SANITY_FLAGS   := -fwrapv -fno-strict-aliasing
+-DEBUG_FLAGS    := -gdwarf-2 -gstrict-dwarf
++CROSSLDFLAGS   += -Wl,--file-alignment,4096 -Wl,-O1 -Wl,--sort-common
++OPTIMIZE_FLAGS := -O3 -march=native -mfpmath=sse -fgraphite-identity -floop-nest-optimize -fdevirtualize-at-ltrans -fipa-pta -fno-semantic-interposition
++SANITY_FLAGS   := -fwrapv -fno-strict-aliasing -pipe
++DEBUG_FLAGS    :=
+ COMMON_FLAGS    = $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(SANITY_FLAGS) -ffile-prefix-map=$(CCACHE_BASEDIR)=.
+ COMMON_FLAGS32 := -mstackrealign
+ CARGO_BUILD_ARG := --release
+EOF
+	fi
+
+	INFO "Configuring build..."
+
+	mkdir -p "build"
+	cd build
+
+	../configure.sh --enable-ccache "--build-name=${VERSION}-archi" # --proton-sdk-image "" --no-proton-sdk
+
+	INFO "Building..."
+
+	make install -j "$JOBS"
+)
+
+INFO "All done! :3"
