@@ -8,7 +8,8 @@ VERSION="latest"
 
 # Script logic
 JOBS="$(grep -c "processor" "/proc/cpuinfo")"
-TOOLS="curl git makeotf patch"
+TOOLS="git makeotf"
+OPTIONAL_TOOLS="curl jq patch"
 SUPPORTED_CONTAINERS="docker podman"
 
 INFO() {
@@ -17,6 +18,10 @@ INFO() {
 
 ERROR() {
 	echo "$(date -u --rfc-3339=seconds) ERROR: $*"
+}
+
+WARN() {
+	echo "$(date -u --rfc-3339=seconds) WARN: $*"
 }
 
 PRINT_USAGE() {
@@ -77,6 +82,11 @@ if [ "$HAS_SUPPORTED_CONTAINER" -eq 0 ]; then
 	exit 1
 fi
 
+for TOOL in $OPTIONAL_TOOLS; do
+	if ! command -v "$TOOL" > /dev/null; then
+		WARN "Optional tool ${TOOL} couldn't be found, this may render the script unusable depending on your settings, consider installing appropriate package for your OS!"
+	fi
+done
 
 if [ "$VERSION" = "latest" ]; then
 	INFO "Checking latest ${SOURCE} release..."
