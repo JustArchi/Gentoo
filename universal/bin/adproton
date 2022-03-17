@@ -135,7 +135,7 @@ git clone "https://github.com/${SOURCE}" --branch "$VERSION" --depth 1 --jobs "$
 	cd "$BUILD_IN"
 
 	case "$OPTIMIZE" in
-		"full")
+		"native")
 		INFO "Patching ${OPTIMIZE} Makefile.in..."
 
 		patch << 'EOF'
@@ -154,7 +154,7 @@ git clone "https://github.com/${SOURCE}" --branch "$VERSION" --depth 1 --jobs "$
  COMMON_FLAGS32 := -mstackrealign
 EOF
 			;;
-		"native")
+		"full")
 		INFO "Patching ${OPTIMIZE} Makefile.in..."
 
 		patch << 'EOF'
@@ -184,7 +184,7 @@ EOF
 	mkdir -p "build"
 	cd build
 
-	../configure.sh --enable-ccache "--build-name=${VERSION}-${SUFFIX}" # --proton-sdk-image "" --no-proton-sdk
+	../configure.sh "--build-name=${VERSION}-${SUFFIX}" # --proton-sdk-image "" --no-proton-sdk
 
 	INFO "Building..."
 
