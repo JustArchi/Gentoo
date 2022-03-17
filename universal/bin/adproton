@@ -2,9 +2,10 @@
 set -eu
 
 # Defaults
-PATCH=1
 SOURCE="GloriousEggroll/proton-ge-custom"
 VERSION="latest"
+OPTIMIZE="native"
+SUFFIX="archi"
 BUILD_IN="/tmp"
 
 # Script logic
@@ -26,19 +27,22 @@ WARN() {
 }
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--build-in <path>] [--source proton/proton-ge] [--version latest/<branch>/<tag>/<commit>] [--no-optimizations-patch]"
+	echo "Usage: $0 [--build-in <path>] [--source proton/proton-ge] [--version latest/<branch>/<tag>/<commit>] [--suffix <suffix>] [--optimize <none/native/full>]"
 }
 
 BUILD_IN_NEXT=0
+OPTIMIZE_NEXT=0
 SOURCE_NEXT=0
+SUFFIX_NEXT=0
 VERSION_NEXT=0
 
 for ARG in "$@"; do
 	case "$ARG" in
 		"--build-in") BUILD_IN_NEXT=1 ;;
 		"--help") PRINT_USAGE; exit 0 ;;
-		"--no-optimizations-patch") PATCH=0 ;;
+		"--optimize") OPTIMIZE_NEXT=1 ;;
 		"--source") SOURCE_NEXT=1 ;;
+		"--suffix") SUFFIX_NEXT=1 ;;
 		"--version") VERSION_NEXT=1 ;;
 		*)
 			if [ "$BUILD_IN_NEXT" -eq 1 ]; then
@@ -52,6 +56,12 @@ for ARG in "$@"; do
 				esac
 
 				SOURCE_NEXT=0
+			elif [ "$OPTIMIZE_NEXT" -eq 1 ]; then
+				OPTIMIZE="$ARG"
+				OPTIMIZE_NEXT=0
+			elif [ "$SUFFIX_NEXT" -eq 1 ]; then
+				SUFFIX="$ARG"
+				SUFFIX_NEXT=0
 			elif [ "$VERSION_NEXT" -eq 1 ]; then
 				VERSION="$ARG"
 				VERSION_NEXT=0
@@ -124,8 +134,28 @@ git clone "https://github.com/${SOURCE}" --branch "$VERSION" --depth 1 --jobs "$
 (
 	cd "$BUILD_IN"
 
-	if [ "$PATCH" -eq 1 ]; then
-		INFO "Patching Makefile.in..."
+	case "$OPTIMIZE" in
+		"full")
+		INFO "Patching ${OPTIMIZE} Makefile.in..."
+
+		patch << 'EOF'
+--- Makefile.in 2022-03-17 15:43:50.633349470 +0100
++++ Makefile.in.2       2022-03-17 15:44:13.801518360 +0100
+@@ -171,8 +171,8 @@ else
+ endif
+ 
+ CROSSLDFLAGS   += -Wl,--file-alignment,4096
+-OPTIMIZE_FLAGS := -O2 -march=nocona -mtune=core-avx2 -mfpmath=sse
+-SANITY_FLAGS   := -fwrapv -fno-strict-aliasing
++OPTIMIZE_FLAGS := -O2 -march=native -mfpmath=sse
++SANITY_FLAGS   := -fwrapv -fno-strict-aliasing -pipe
+ DEBUG_FLAGS    := -gdwarf-2 -gstrict-dwarf
+ COMMON_FLAGS    = $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(SANITY_FLAGS) -ffile-prefix-map=$(CCACHE_BASEDIR)=.
+ COMMON_FLAGS32 := -mstackrealign
+EOF
+			;;
+		"native")
+		INFO "Patching ${OPTIMIZE} Makefile.in..."
 
 		patch << 'EOF'
 --- Makefile.in 2022-03-16 21:31:36.061588205 +0100
@@ -146,18 +176,23 @@ git clone "https://github.com/${SOURCE}" --branch "$VERSION" --depth 1 --jobs "$
  COMMON_FLAGS32 := -mstackrealign
  CARGO_BUILD_ARG := --release
 EOF
-	fi
+			;;
+	esac
 
 	INFO "Configuring build..."
 
 	mkdir -p "build"
 	cd build
 
-	../configure.sh --enable-ccache "--build-name=${VERSION}-archi" # --proton-sdk-image "" --no-proton-sdk
+	../configure.sh --enable-ccache "--build-name=${VERSION}-${SUFFIX}" # --proton-sdk-image "" --no-proton-sdk
 
 	INFO "Building..."
 
 	make install -j "$JOBS"
 )
+
+INFO "Cleaning up..."
+
+rm -rf "$BUILD_IN"
 
 INFO "All done! :3"
