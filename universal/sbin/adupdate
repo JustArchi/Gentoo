@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+set -eu
+
+SYNC=1
+
+for ARG in "$@"; do
+	case "$ARG" in
+		"-n") SYNC=0 ;;
+		*) exit 1
+	esac
+done
+
+if [ "$SYNC" -eq 1 ]; then
+	emerge --sync --quiet
+fi
+
+emerge -DuNa --with-bdeps=y --keep-going @world
+emerge -DuNac --with-bdeps=y --keep-going
+
+if command -v "eclean-dist" > /dev/null; then
+	eclean-dist -dq
+fi
+
+if command -v "eclean-pkg" > /dev/null; then
+	eclean-pkg -dq --changed-deps
+fi
+
+if command -v "eclean-kernel" > /dev/null; then
+	eclean-kernel -A -n 2
+fi

@@ -4,9 +4,9 @@ set -eu
 # Defaults
 SOURCE="GloriousEggroll/proton-ge-custom"
 VERSION="latest"
-OPTIMIZE="native"
+OPTIMIZE="full"
 SUFFIX="archi"
-BUILD_IN="/tmp"
+BUILD_IN="."
 
 # Script logic
 JOBS="$(grep -c "processor" "/proc/cpuinfo")"
@@ -121,7 +121,7 @@ if [ "$BUILD_IN" = "/tmp" ]; then
 	BUILD_IN="$(mktemp -d)"
 else
 	# Extra directory to ensure user didn't pick existing one that we'll wipe from his PC
-	BUILD_IN="${BUILD_IN}/build"
+	BUILD_IN="${BUILD_IN}/${VERSION}"
 
 	rm -rf "$BUILD_IN"
 	mkdir -p "$BUILD_IN"
