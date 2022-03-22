@@ -1,2 +1,2 @@
 >=dev-lang/go-1.18 # https://bugs.gentoo.org/835367
->=dev-python/flask-compress-1.11 # https://bugs.gentoo.org/834877
+>=media-libs/dav1d-1.0.0 # https://bugs.gentoo.org/835788
