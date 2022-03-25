@@ -1,2 +1,1 @@
 >=dev-lang/go-1.18 # https://bugs.gentoo.org/835367
->=media-libs/dav1d-1.0.0 # https://bugs.gentoo.org/835788
