@@ -16,8 +16,7 @@
 
 ### `dracut`
 
-- **[Optional `/etc/crypttab` support](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/cryptsetup.conf)**, a VERY important part which makes `cryptsetup` on `systemd` a breeze, with not a single `grub` cmdline arg needed, **should be offered by the Gentoo itself**
-- **[`hostonly`](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/hostonly.conf)**, no need to bundle what you don't need
+- **[`hostonly`](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/hostonly.conf)**, a VERY important part which makes `cryptsetup` on `systemd` a breeze, with not a single `grub` cmdline arg needed, on top of not embedding things that you don't need
 - **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/xz.conf)**, arguments for `xz` same as kernel compression
 
 ### `env.d`
