@@ -1,0 +1,5 @@
+app-admin/keepassxc browser
+games-util/steam-client-meta trayicon
+media-video/vlc opus
+sys-boot/grub device-mapper
+sys-process/htop lm-sensors
