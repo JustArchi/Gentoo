@@ -1,6 +1,10 @@
 net-libs/nodejs -lto # LTO builds of nodejs using gcc-11+ currently fail tests and produce runtime errors. Either switch to gcc-10 or unset USE=lto for this ebuild
-
+#media-libs/libsdl2 gles2
 #>=dev-python/pyyaml-5.4.1
 #media-fonts/cantarell font_types_otf
 #media-libs/mesa -vaapi
 #sys-libs/ncurses -gpm
+
+#media-video/obs-studio -wayland
+#mail-client/thunderbird -wayland
+#www-client/firefox -wayland
