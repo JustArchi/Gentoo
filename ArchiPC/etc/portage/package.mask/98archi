@@ -1,1 +1,2 @@
 #>=dev-lang/go-1.18 # https://bugs.gentoo.org/835367
+>=dev-python/setuptools-61 # https://bugs.gentoo.org/836645

@@ -1,4 +1,5 @@
 app-admin/keepassxc browser
+app-emulation/qemu spice usbredir virtfs
 games-util/steam-client-meta trayicon
 media-video/vlc opus
 sys-boot/grub device-mapper
