@@ -14,8 +14,8 @@ if [ "$SYNC" -eq 1 ]; then
 	emerge --sync --quiet
 fi
 
-emerge -DuNa --with-bdeps=y --keep-going @world
-emerge -DuNac --with-bdeps=y --keep-going
+emerge -DuNa --with-bdeps=y @world
+emerge -DuNac --with-bdeps=y
 
 if command -v "eclean-dist" > /dev/null; then
 	eclean-dist -dq
