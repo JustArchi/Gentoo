@@ -17,6 +17,7 @@
 ### `dracut`
 
 - **[`hostonly`](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/hostonly.conf)**, a VERY important part which makes `cryptsetup` on `systemd` a breeze, with not a single `grub` cmdline arg needed, on top of not embedding things that you don't need
+- **[`dm-crypt` driver included](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/dm-crypt.conf)**, as despite `crypt` module, this one is not always included
 - **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/dracut.conf.d/xz.conf)**, arguments for `xz` same as kernel compression
 
 ### `env.d`
@@ -34,7 +35,6 @@ Instead of spending hours if not days creating your own kernel config (and usual
 - **[automatic `grub.cfg` regeneration](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/postinst.d/99-grub.sh)**, triggers only if you're currently using `grub.cfg`, safe to include even on non-grub machines, **should be offered by Gentoo itself**
 - **[`-march=native` for intel](https://github.com/JustArchi/Gentoo/blob/main/intel/etc/kernel/config.d/intel-march-native.config)**, requires **[graysky's kernel patch](https://github.com/graysky2/kernel_compiler_patch)**, otherwise is a no-op when applied, naturally you don't want that on AMD
 - **[`systemd` target](https://github.com/JustArchi/Gentoo/blob/main/systemd/etc/kernel/config.d/systemd.config)**, naturally you don't want that on `OpenRC`
-- **[`dm-crypt` built-in](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/cryptsetup.config)**, as module usually doesn't cut it, rendering booting unusable
 - **[Disabled io-delay](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/io-delay.config)**, not needed for modern machines, use at your own risk
 - **[`xz` compression](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/kernel-compression.config)**, gives the best compression ratio and very good decompression speed, overall boots faster compared to `gzip` on my `x64` machine
 - **[Better responsiveness](https://github.com/JustArchi/Gentoo/blob/main/universal/etc/kernel/config.d/responsiveness.config)**, includes `PREEMPT` and 1000 Hz interrupts
