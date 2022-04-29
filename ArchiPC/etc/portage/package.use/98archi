@@ -1,8 +1,10 @@
 app-admin/keepassxc browser
 app-emulation/qemu spice usbredir virtfs
 games-util/steam-client-meta trayicon
+kde-apps/kio-extras samba
 mail-client/thunderbird -clang
 media-video/vlc opus
+net-libs/nodejs inspector
 sys-boot/grub device-mapper
 sys-process/htop lm-sensors
 www-client/firefox -clang
